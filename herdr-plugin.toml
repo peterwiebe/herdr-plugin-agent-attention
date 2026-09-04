@@ -1,15 +1,19 @@
 id = "agent-attention"
 name = "Agent Attention"
-version = "0.1.0"
+version = "0.2.0"
 min_herdr_version = "0.7.5"
-description = "Jump to the most recent agent that is blocked or finished-unseen."
+description = "Cycle through blocked and finished-unseen agents by view history."
 platforms = ["linux", "macos", "windows"]
 
 [[actions]]
 id = "goto"
-title = "Go to agent needing attention"
+title = "Cycle to next agent needing attention"
 contexts = ["workspace", "pane"]
 command = ["bash", "bin/goto.sh"]
+
+[[events]]
+on = "pane.focused"
+command = ["python3", "lib/cycle.py", "record-focus"]
 
 [[actions]]
 id = "apply-view"

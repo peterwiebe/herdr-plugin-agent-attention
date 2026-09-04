@@ -1,22 +1,28 @@
 # Agent Attention
 
-A Herdr plugin that jumps to the agent that most recently finished or needs your input.
+A Herdr plugin that cycles through agents that finished or need your input.
 
 ## What it does
 
-Press a hotkey and Herdr focuses the highest-priority attention agent:
+Press a hotkey to cycle through attention agents:
 
 1. `blocked` — waiting for approval or a response
 2. `done` — finished in the background and not yet seen
 
-Agents are ranked by status first, then by most recent state change.
+Within each group, the plugin cycles in view order:
 
-The action also shows a short Herdr notification so you get feedback even when you were already on the target pane.
+- Agents you have not visited recently come first
+- Pressing the hotkey again moves to the next agent in the ring
+- `blocked` agents stay ahead of `done` agents
+
+The plugin tracks pane focus history automatically, including when you click an agent in the sidebar, so the cycle reflects what you have actually looked at.
+
+Each jump also shows a short Herdr notification like `Agent Name: finished (2/4)`.
 
 ## Requirements
 
 - Herdr 0.7.5+
-- `jq` on your `PATH`
+- Python 3
 
 ## Install
 
@@ -32,11 +38,11 @@ Add a binding to `~/.config/herdr/config.toml`:
 [[keys.command]]
 key = "ctrl+alt+a"
 type = "shell"
-command = '''bash "$HOME/.herdr/plugins/data/agent-attention/bin/goto.sh"'''
-description = "go to agent needing attention"
+command = '''bash "$HOME/Development/herdr-plugin-agent-attention/bin/goto.sh"'''
+description = "cycle attention agents"
 ```
 
-After a GitHub install, Herdr stores the plugin under its managed plugin data directory. To use a stable path in your config, run:
+For a GitHub install, resolve the plugin path with:
 
 ```bash
 herdr plugin config-dir agent-attention
@@ -57,14 +63,14 @@ Prefix bindings also work:
 key = "prefix+shift+a"
 type = "shell"
 command = '''bash "<config-dir>/bin/goto.sh"'''
-description = "go to agent needing attention"
+description = "cycle attention agents"
 ```
 
 ## Actions
 
 | Action | Description |
 | --- | --- |
-| `agent-attention.goto` | Focus the top attention agent |
+| `agent-attention.goto` | Cycle to the next attention agent |
 | `agent-attention.apply-view` | Sort the Agents panel by attention |
 | `agent-attention.clear-view` | Reset the Agents panel sort |
 
@@ -74,9 +80,9 @@ Example:
 herdr plugin action invoke agent-attention.goto
 ```
 
-## Optional: cycle attention agents
+## Optional: sidebar navigation
 
-Bind Herdr's built-in agent navigation keys and apply the attention view once:
+You can also bind Herdr's built-in agent navigation keys and apply the attention view once:
 
 ```toml
 next_agent = "ctrl+alt+]"
