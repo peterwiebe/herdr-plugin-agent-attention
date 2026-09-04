@@ -1,0 +1,27 @@
+id = "agent-attention"
+name = "Agent Attention"
+version = "0.1.0"
+min_herdr_version = "0.7.5"
+description = "Jump to the most recent agent that is blocked or finished-unseen."
+platforms = ["linux", "macos", "windows"]
+
+[[actions]]
+id = "goto"
+title = "Go to agent needing attention"
+contexts = ["workspace", "pane"]
+command = ["bash", "bin/goto.sh"]
+
+[[actions]]
+id = "apply-view"
+title = "Sort Agents panel by attention"
+contexts = ["workspace", "pane"]
+command = ["python3", "lib/view.py", "set"]
+
+[[actions]]
+id = "clear-view"
+title = "Reset Agents panel sort"
+contexts = ["workspace", "pane"]
+command = ["python3", "lib/view.py", "clear"]
+
+[[startup]]
+command = ["python3", "lib/view.py", "restore"]
